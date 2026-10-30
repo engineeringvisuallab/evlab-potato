@@ -1,0 +1,3 @@
+:root{--emerald:#0f7a5a;--cream:#fbf6e9;--gold:#e8b931;--bg:#fbf6e9;--card:#fff;--text:#23302b;--muted:#6b756f;--line:#e3dccb;
+--write:#2b6cd9;--cell:#1f9d55;--present:#f2724b;--r:14px;--font:system-ui,"Segoe UI","Noto Sans Bengali",sans-serif}
+:root[data-theme=dark]{--bg:#141a17;--card:#1e2723;--text:#eef2ef;--muted:#9fb0a8;--line:#2f3b36}
