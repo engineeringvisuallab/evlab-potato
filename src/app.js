@@ -3,6 +3,9 @@ import {usage} from './shared/storage.js';
 import {TEMPLATES,APPS} from './shared/templates.js';
 import * as Writer from './evwrite/editor.js';
 import {importFile} from './evwrite/import-export.js';
+import * as Cell from './evcell/grid.js';
+import * as Present from './evpresent/editor.js';
+import {importSpreadsheet} from './evcell/xlsx.js';
 const $=s=>document.querySelector(s),view=$('#view');
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const st={tq:'',tapp:'all',fq:'',fsort:'modified'};
@@ -15,9 +18,9 @@ async function home(){
  const files=await FM.list({q:st.fq,sort:st.fsort});
  const tpls=TEMPLATES.filter(t=>(st.tapp==='all'||t.app===st.tapp)&&(t.title+t.cat+t.desc).toLowerCase().includes(st.tq.toLowerCase()));
  const u=await usage();
- view.innerHTML=`<input type="file" id="docxin" accept=".docx" hidden><h1>Welcome to EVLab Potato</h1><p class="tag">Create. Calculate. Present. Files are saved only in this browser, so download backups regularly.</p>
+ view.innerHTML=`<input type="file" id="docxin" accept=".docx" hidden><input type="file" id="csvin" accept=".csv,.xlsx" hidden><h1>Welcome to EVLab Potato</h1><p class="tag">Create. Calculate. Present. Files are saved only in this browser, so download backups regularly.</p>
  <div class="grid">${Object.entries(APPS).map(([k,a])=>`<div class="card" style="--c:${a.color}"><h3>${a.name}</h3><p>${a.desc}</p>
-  <div class="row"><button class="btn primary" data-new="${k}">New blank ${a.kind}</button><button class="btn" data-go="tpl" data-app="${k}">Templates</button>${k==='evwrite'?'<button class="btn" data-act="importdocx">Open .docx</button>':''}</div></div>`).join('')}</div>
+  <div class="row"><button class="btn primary" data-new="${k}">New blank ${a.kind}</button><button class="btn" data-go="tpl" data-app="${k}">Templates</button>${k==='evwrite'?'<button class="btn" data-act="importdocx">Open .docx</button>':''}${k==='evcell'?'<button class="btn" data-act="importcsv">Open .csv / .xlsx</button>':''}</div></div>`).join('')}</div>
  <h2 id="tpl">Templates</h2><div class="row"><input id="tq" placeholder="Search templates" aria-label="Search templates" value="${esc(st.tq)}">
  <select id="tapp" aria-label="Filter by app"><option value="all">All apps</option>${Object.entries(APPS).map(([k,a])=>`<option value="${k}" ${st.tapp===k?'selected':''}>${a.name}</option>`).join('')}</select></div><br>
  <div class="grid">${tpls.map(t=>`<div class="card" style="--c:${APPS[t.app].color}"><h3>${esc(t.title)}</h3><p>${esc(t.desc)}</p><p class="tag">${APPS[t.app].name} · ${esc(t.cat)} · ${esc(t.format)}</p>
@@ -32,15 +35,19 @@ async function home(){
  const bind=(id,k,ev)=>{const e=$(id);e.addEventListener(ev,()=>{st[k]=e.value;const p=e.selectionStart;home().then(()=>{const n=$(id);n.focus();try{n.setSelectionRange(p,p)}catch{}})})};
  $('#docxin').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
   try{const r=await importFile(f,FM);if(r.warnings.length)alert('Imported as a new document. Notes:\n'+r.warnings.join('\n'));location.hash='#/file/'+r.file.id}catch(err){console.error(err);alert('Import failed: '+err.message)}};
+ $('#csvin').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
+  try{const r=await importSpreadsheet(f,FM);if(r.warnings.length)alert('Imported as a new spreadsheet. Notes:\n'+r.warnings.join('\n'));location.hash='#/file/'+r.file.id}catch(err){console.error(err);alert('Import failed: '+err.message)}};
  bind('#tq','tq','input');bind('#tapp','tapp','change');bind('#fq','fq','input');bind('#fsort','fsort','change');
 }
 async function viewer(id){
  const f=await FM.open(id);if(!f){location.hash='#/';return}
  if(f.app==='evwrite'){Writer.mount(view,f);return}
+ if(f.app==='evcell'){Cell.mount(view,f);return}
+ if(f.app==='evpresent'){Present.mount(view,f);return}
  view.innerHTML=`<a href="#/" class="btn">← Home</a><h1>${esc(f.name)}</h1><p class="tag">${APPS[f.app].name} · saved ${fmt(f.modified)}${f.template?' · from template '+esc(f.template):''}</p>
  <div class="empty">The ${APPS[f.app].name} editor is not built yet (it arrives in its own milestone). Your file is already saved and its data is shown below.</div><h2>Stored data</h2><pre>${esc(JSON.stringify(f.data,null,2))}</pre>`;
 }
-async function route(){await Writer.flush();Writer.unmount();const m=location.hash.match(/^#\/file\/(.+)$/);if(m)await viewer(m[1]);else await home();}
+async function route(){await Writer.flush();Writer.unmount();await Cell.flush();Cell.unmount();await Present.flush();Present.unmount();const m=location.hash.match(/^#\/file\/(.+)$/);if(m)await viewer(m[1]);else await home();}
 view.addEventListener('click',async e=>{
  const b=e.target.closest('button');if(!b)return;const d=b.dataset;
  try{
@@ -54,6 +61,7 @@ view.addEventListener('click',async e=>{
  else if(d.act==='del'){if(confirm('Delete this file permanently? This cannot be undone.')){await FM.remove(d.id);home()}}
  else if(d.act==='backup')FM.backupAll();
  else if(d.act==='importdocx')$('#docxin').click();
+ else if(d.act==='importcsv')$('#csvin').click();
  }catch(err){console.error(err);alert('Something went wrong: '+err.message)}
 });
 addEventListener('hashchange',route);route();

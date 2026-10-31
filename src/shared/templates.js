@@ -4,6 +4,7 @@ export const APPS={
  evpresent:{name:'EVPresent',desc:'Turn ideas into beautiful presentations.',color:'var(--present)',kind:'presentation'}};
 // Starter set. Content is editable sample data; full template libraries arrive with each app milestone.
 import {DOC_TEMPLATES} from '../templates/documents.js';
+import {SHEET_TEMPLATES} from '../templates/spreadsheets.js';
 const BASE=[
  {id:'w-blank',app:'evwrite',cat:'Basic',title:'Blank document',desc:'Empty A4 page.',format:'A4',data:{html:'<p></p>',paper:'A4'}},
  {id:'w-resume',app:'evwrite',cat:'Career',title:'Professional resume / CV',desc:'Clean one-page CV (sample text).',format:'A4',data:{html:'<h1>Your Name</h1><p>Sample: email, phone</p><h2>Experience</h2><p>Sample entry</p>',paper:'A4'}},
@@ -16,4 +17,4 @@ const BASE=[
  {id:'p-blank',app:'evpresent',cat:'Basic',title:'Blank presentation',desc:'One empty 16:9 slide.',format:'16:9',data:{ratio:'16:9',slides:[{layout:'blank',objects:[]}]}},
  {id:'p-pitch',app:'evpresent',cat:'Business',title:'Business pitch deck',desc:'Title, problem, solution.',format:'16:9',data:{ratio:'16:9',slides:[{layout:'cover',title:'Your Pitch'},{layout:'text',title:'Problem'},{layout:'text',title:'Solution'}]}},
  {id:'p-progress',app:'evpresent',cat:'Engineering',title:'Construction progress presentation',desc:'Status, photos, schedule.',format:'16:9',data:{ratio:'16:9',slides:[{layout:'cover',title:'Progress Report'},{layout:'text',title:'Status'}]}}];
-export const TEMPLATES=[...BASE.filter(t=>!['w-resume','w-minutes','w-waterreport'].includes(t.id)),...DOC_TEMPLATES];
+export const TEMPLATES=[...BASE.filter(t=>!['w-resume','w-minutes','w-waterreport','c-budget','c-boq','c-marks'].includes(t.id)),...DOC_TEMPLATES,...SHEET_TEMPLATES];
