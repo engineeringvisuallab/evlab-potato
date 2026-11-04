@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'">
+<title>EVLab Potato</title>
+<style>
+:root{--bg:#fbf6e9;--card:#fff;--text:#23302b;--line:#e3dccb;--emerald:#0f7a5a;--gold:#e8b931}
+@media (prefers-color-scheme:dark){:root{--bg:#141a17;--card:#1e2723;--text:#eef2ef;--line:#2f3b36}}
+body{margin:0;padding:18px;background:var(--bg);color:var(--text);font:14px system-ui,"Segoe UI","Noto Sans Bengali",sans-serif}
+#msg{white-space:pre-wrap;margin:0 0 10px}
+input{width:100%;box-sizing:border-box;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--text);font:inherit}
+input:focus-visible,button:focus-visible{outline:3px solid var(--gold)}
+.row{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+button{padding:8px 18px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit;cursor:pointer}
+button.p{background:var(--emerald);border-color:var(--emerald);color:#fff}
+</style></head>
+<body>
+<p id="msg"></p><input id="v" autocomplete="off" aria-labelledby="msg">
+<div class="row"><button id="cancel">Cancel</button><button id="ok" class="p">OK</button></div>
+<script>
+const $=s=>document.querySelector(s);
+evPrompt.init().then(d=>{ if(!d) return; $('#msg').textContent=d.message; $('#v').value=d.value; $('#v').focus(); $('#v').select(); });
+$('#ok').onclick=()=>evPrompt.done($('#v').value);
+$('#cancel').onclick=()=>evPrompt.done(null);
+addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault();$('#ok').click()} else if(e.key==='Escape'){e.preventDefault();$('#cancel').click()} });
+</script></body></html>

@@ -13,7 +13,3 @@
 .ep-g{display:grid;grid-template-columns:1fr 1fr;gap:6px}.ep-present{position:fixed;inset:0;background:#000;z-index:9999;overflow:hidden;outline:none;cursor:pointer}
 .ep-pslide{position:absolute;left:50%;top:50%;transform-origin:center center;margin:0;translate:-50% -50%;color:#222;overflow:hidden}.ep-pslide .ep-o{cursor:default}
 .ep-pcount{position:absolute;right:12px;bottom:8px;color:#fff8;font:13px sans-serif}
-.ep-tbl{width:100%;height:100%;border-collapse:collapse;table-layout:fixed;font:inherit;color:inherit}.ep-tbl td{border:1px solid #999;padding:4px;vertical-align:middle;word-break:break-word;overflow:hidden}
-.ep-o.ep-chart{background:#fff}.ep-ctitle{height:28px;line-height:28px;text-align:center;font:bold 14px sans-serif;color:#222}.ep-o.ep-chart svg{display:block;width:100%}
-.ep-marq{position:absolute;border:1px dashed var(--present);background:#f2724b22;pointer-events:none}.ep-props textarea{width:100%;font:12px monospace;margin-top:4px}.ep-props .ep-col{flex-direction:column;align-items:stretch}
-.ep-props select{max-width:100%}

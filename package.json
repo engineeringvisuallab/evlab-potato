@@ -1,0 +1,77 @@
+{
+  "name": "evlab-potato",
+  "productName": "EVLab Potato",
+  "version": "0.5.0",
+  "description": "EVLab Potato - offline office suite (EVWrite, EVCell, EVPresent) as a Windows desktop app.",
+  "author": "Engineering Visual Lab",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "start:write": "electron . --app=evwrite",
+    "start:cell": "electron . --app=evcell",
+    "start:present": "electron . --app=evpresent",
+    "smoke": "node scripts/run-smoke.js",
+    "icons": "python3 scripts/make-icons.py",
+    "dist": "electron-builder --win nsis --x64"
+  },
+  "devDependencies": {
+    "electron": "45.2.2",
+    "electron-builder": "26.18.0",
+    "resedit": "3.1.0"
+  },
+  "build": {
+    "appId": "com.evlab.potato",
+    "productName": "EVLab Potato",
+    "copyright": "Engineering Visual Lab",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "index.html",
+      "src/**/*",
+      "styles/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "build/icons",
+        "to": "icons",
+        "filter": [
+          "*.ico"
+        ]
+      }
+    ],
+    "afterPack": "build/after-pack.js",
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icons/evlab.ico",
+      "artifactName": "EVLab-Potato-Setup-${version}.exe",
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "EVLab Potato",
+      "include": "build/installer.nsh",
+      "installerIcon": "build/icons/evlab.ico",
+      "uninstallerIcon": "build/icons/evlab.ico",
+      "installerHeaderIcon": "build/icons/evlab.ico",
+      "deleteAppDataOnUninstall": false,
+      "runAfterFinish": true
+    }
+  }
+}
